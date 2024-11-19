@@ -292,7 +292,6 @@ export default function Component() {
         <footer className="text-center text-sm mt-8 opacity-70">
           <p>SYSTEM TIME: {currentTime.toLocaleTimeString()}</p>
           <p>© 2024 - Running on-chain.exe v4.2.0</p>
-          <p className="mt-2">Remote &gt; from anywhere</p>
         </footer>
       </main>
     </div>

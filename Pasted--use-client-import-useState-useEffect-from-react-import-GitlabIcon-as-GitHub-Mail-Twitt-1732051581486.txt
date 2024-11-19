@@ -1,0 +1,125 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { GitlabIcon as GitHub, Mail, Twitter, ExternalLink, Linkedin, MessageCircle, Moon, Sun, ChevronDown } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+const writtenWork = [
+  {
+    id: 'neural-network-guide',
+    title: "Time to Finality: Best Metric For Blockchain Speed",
+    date: "2024-01-15",
+    excerpt: "An introduction to the concept of Time to Finality (TTF) and why it's a better metric for blockchain speed than transaction per second.",
+    link: "https://www.avax.network/blog/time-to-finality-ttf-the-ultimate-metric-for-blockchain-speed"
+  },
+  {
+    id: 'system-design-guide',
+    title: "Avalanche Subnets, Polygon Supernets, & Cosmos App Chains: Research Report",
+    date: "2023-07-31",
+    excerpt: "A research report on Avalanche Subnets, Polygon Supernets, and Cosmos App Chains. Delving into the technical details of each, spanning consensus mechanisms, security, costs and more.",
+    link: "https://medium.com/@avaxdevelopers/avalanche-subnets-polygon-supernets-cosmos-app-chains-research-report-35b0a6cb830f"
+  },
+  {
+    id: 'sleep-deprived-coding',
+    title: "Deploying a Distributed EVM Layer 1 Blockchain using Avalanche, Docker, and GitHub Codespaces",
+    date: "2023-11-02",
+    excerpt: "A step by step guide to deploying a distributed EVM Layer 1 blockchain using Avalanche, Docker, and GitHub Codespaces.",
+    link: "https://dev.to/usmanasim/deploying-a-distributed-evm-layer-1-blockchain-using-avalanche-docker-and-github-codespaces-5eo6"
+  }
+]
+
+const talks = [
+  {
+    title: "Consensus 2024: Custom Virtual Machines, Powerful Consensus Mechanisms, and 100k TPS on Avalanche",
+    event: "In Person Talk",
+    location: "Austin, TX",
+    link: "https://x.com/asimfiles/status/1801282893064614282",
+  },
+  {
+    title: "Scaling Enterprise Systems with Avalanche: UDC Developer Conference 2023",
+    event: "In Person Talk",
+    location: "Seoul, South Korea",
+    link: "https://www.youtube.com/watch?v=o4it_zJDhLk&t=73s",
+  },
+  {
+    title: "Do It Yourself: Blockchain Creation @ ETHDenver 2024",
+    event: "In Person Talk",
+    location: "Denver, CO",
+    link: "https://www.youtube.com/watch?v=SSzRBfljjGA",
+  },
+  {
+    title: "Avalanche: The L1 Launchpad @ ETH CC 2024",
+    event: "In Person Talk",
+    location: "Brussels, Belgium",
+    link: "https://www.youtube.com/watch?v=1knOqRex_Ag",
+  },
+  {
+    title: "Encode Club 'Future of University' Hackathon Workshop",
+    event: "Hackathon",
+    location: "Online",
+    link: "https://www.youtube.com/watch?v=9UkeaKDJqSs&t=121s",
+  },
+  {
+    title: "Blockchain Infrastructure as a Service @ Subnet Show",
+    event: "Podcast",
+    location: "Online",
+    link: "https://www.youtube.com/watch?v=49KjlAHtt94",
+  },
+  {
+    title: "Theory Thursdays @ ETHDenver 2023",
+    event: "Hackathon",
+    location: "Denver, CO",
+    link: "https://www.youtube.com/watch?v=mIOcSc1owYs",
+  }
+]
+
+type Selection = 'about' | 'written-work' | 'talks' | 'contact'
+
+export default function Component() {
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [activeSection, setActiveSection] = useState<Selection>('about')
+  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [showAllTalks, setShowAllTalks] = useState(false)
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const handleSectionClick = (section: Selection) => {
+    setActiveSection(section)
+    const element = document.getElementById(section)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-green-400' : 'bg-gray-100 text-gray-800'} p-4 md:p-8 font-mono transition-colors duration-300`}>
+      <main className="max-w-4xl mx-auto">
+        <header className="mb-12 flex justify-between items-center">
+          <h1 
+            className="text-6xl font-bold mb-8"
+            style={{
+              color: isDarkMode ? '#4ade80' : '#15803d',
+              textShadow: isDarkMode ? '0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00' : 'none',
+            }}
+          >
+            usman.asim
+          </h1>
+          <Button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+          >
+            {isDarkMode ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+          </Button>
+        </header>
+
+        <Tabs defaultValue="about" className="mb-12">
+          <TabsList>
+            {['about', 'written-work', 'talks', 'contact'].map((item) => (
+              <TabsTrigger key={item} value={item} onClick={() => handleSectionClick(item as ...

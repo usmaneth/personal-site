@@ -1,34 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'wouter';
 import { GitlabIcon as GitHub, Mail, Twitter, ExternalLink, Linkedin, MessageCircle, Moon, Sun, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { format } from 'date-fns';
 
-const writtenWork = [
-  {
-    id: 'neural-network-guide',
-    title: "Time to Finality: Best Metric For Blockchain Speed",
-    date: "2024-01-15",
-    excerpt: "An introduction to the concept of Time to Finality (TTF) and why it's a better metric for blockchain speed than transaction per second.",
-    link: "https://www.avax.network/blog/time-to-finality-ttf-the-ultimate-metric-for-blockchain-speed"
-  },
-  {
-    id: 'system-design-guide',
-    title: "Avalanche Subnets, Polygon Supernets, & Cosmos App Chains: Research Report",
-    date: "2023-07-31", 
-    excerpt: "A research report on Avalanche Subnets, Polygon Supernets, and Cosmos App Chains. Delving into the technical details of each, spanning consensus mechanisms, security, costs and more.",
-    link: "https://medium.com/@avaxdevelopers/avalanche-subnets-polygon-supernets-cosmos-app-chains-research-report-35b0a6cb830f"
-  },
-  {
-    id: 'sleep-deprived-coding',
-    title: "Deploying a Distributed EVM Layer 1 Blockchain using Avalanche, Docker, and GitHub Codespaces",
-    date: "2023-11-02",
-    excerpt: "A step by step guide to deploying a distributed EVM Layer 1 blockchain using Avalanche, Docker, and GitHub Codespaces.",
-    link: "https://dev.to/usmanasim/deploying-a-distributed-evm-layer-1-blockchain-using-avalanche-docker-and-github-codespaces-5eo6"
-  }
-]
+type BlogPost = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  publishedAt: string;
+};
 
 const talks = [
   {
@@ -82,6 +69,17 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<Selection>('about')
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [showAllTalks, setShowAllTalks] = useState(false)
+
+  const { data: blogPosts = [], isLoading } = useQuery<BlogPost[]>({
+    queryKey: ['blog-posts'],
+    queryFn: async () => {
+      const response = await fetch('/api/blog-posts');
+      if (!response.ok) {
+        throw new Error('Failed to fetch blog posts');
+      }
+      return response.json();
+    },
+  });
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
@@ -166,22 +164,32 @@ export default function App() {
             <Card>
               <CardContent className="pt-6">
                 <div className="space-y-8">
-                  {writtenWork.map((work) => (
-                    <article key={work.id} className="group">
-                      <a href={work.link} className="block space-y-2" target="_blank" rel="noopener noreferrer">
-                        <h3 className="text-xl font-bold group-hover:text-blue-400 transition-colors">
-                          &gt; {work.title}
-                        </h3>
-                        <div className="text-sm opacity-70">
-                          {work.date}
-                        </div>
-                        <p>{work.excerpt}</p>
-                        <div className="text-blue-400 group-hover:text-blue-300 inline-flex items-center">
-                          READ_MORE.exe <ExternalLink className="ml-1 w-4 h-4" />
-                        </div>
-                      </a>
-                    </article>
-                  ))}
+                  {isLoading ? (
+                    <div className="animate-pulse space-y-4">
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                      <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    </div>
+                  ) : (
+                    blogPosts.map((post) => (
+                      <article key={post.id} className="group">
+                        <Link href={`/blog/${post.slug}`}>
+                          <a className="block space-y-2">
+                            <h3 className="text-xl font-bold group-hover:text-blue-400 transition-colors">
+                              &gt; {post.title}
+                            </h3>
+                            <div className="text-sm opacity-70">
+                              {format(new Date(post.publishedAt), 'MMMM d, yyyy')}
+                            </div>
+                            <p>{post.excerpt}</p>
+                            <div className="text-blue-400 group-hover:text-blue-300 inline-flex items-center">
+                              READ_MORE.exe <ExternalLink className="ml-1 w-4 h-4" />
+                            </div>
+                          </a>
+                        </Link>
+                      </article>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>

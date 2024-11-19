@@ -6,11 +6,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import App from "./pages/App";
+import BlogPost from "./pages/BlogPost";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={App} />
+      <Route path="/blog/:slug" component={BlogPost} />
       <Route>404 Page Not Found</Route>
     </Switch>
   );
